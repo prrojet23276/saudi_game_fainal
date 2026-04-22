@@ -1,0 +1,24 @@
+<audio id="mos2" loop>
+  <source src="mos2.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let music = document.getElementById("mos2");
+
+// استرجاع الوقت
+let savedTime = localStorage.getItem("musicTime");
+if(savedTime){
+    music.currentTime = savedTime;
+}
+
+// استرجاع الكتم
+let isMuted = localStorage.getItem("muted");
+if(isMuted === "true"){
+    music.muted = true;
+}
+
+// نحفظ الوقت
+setInterval(()=>{
+    localStorage.setItem("musicTime", music.currentTime);
+},1000);
+</script>
