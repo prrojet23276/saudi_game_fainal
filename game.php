@@ -469,7 +469,9 @@ z-index:2;
 </head>
 
 <body>
-    <iframe src="music.html" id="musicFrame" style="display:none;"></iframe>
+<audio id="mos2" loop>
+  <source src="mos2.mp3" type="audio/mpeg">
+</audio>
 <div class="top-bar">
 
     <!-- يسار -->
@@ -782,40 +784,6 @@ window.location.href="logout.php";
 
 }
 
-window.onload = function(){
-
-let btn = document.querySelector(".mute-btn");
-
-// 📥 نجيب حالة الكتم
-let isMuted = localStorage.getItem("muted");
-
-if(isMuted === "true"){
-    btn.innerHTML = "🔇";
-}else{
-    btn.innerHTML = "🔊";
-}
-
-}
-
-function toggleSound(){
-
-let frame = document.getElementById("musicFrame");
-let music = frame.contentWindow.document.getElementById("bgMusic");
-
-let btn = document.querySelector(".mute-btn");
-
-if(music.muted){
-    music.muted = false;
-    btn.innerHTML = "🔊";
-    localStorage.setItem("muted", "false");
-}else{
-    music.muted = true;
-    btn.innerHTML = "🔇";
-    localStorage.setItem("muted", "true");
-}
-
-}
-
 function openLeaderboard(){
 
 document.getElementById("leaderPopup").style.display = "flex";
@@ -942,23 +910,54 @@ location.reload();
 }
 
 }
-document.addEventListener("click", function(){
 
-let frame = document.getElementById("musicFrame");
+function toggleSound(){
 
-if(frame && frame.contentWindow){
+let music = document.getElementById("mos2");
+let btn = document.querySelector(".mute-btn");
 
-let music = frame.contentWindow.document.getElementById("mos2");
+if(music.muted){
+    music.muted = false;
+    btn.innerHTML = "🔊";
+    localStorage.setItem("muted", "false");
+}else{
+    music.muted = true;
+    btn.innerHTML = "🔇";
+    localStorage.setItem("muted", "true");
+}
 
-if(music){
+}
+let music = document.getElementById("mos2");
+
+// رجع الوقت
+let savedTime = localStorage.getItem("musicTime");
+if(savedTime){
+    music.currentTime = savedTime;
+}
+
+// رجع الكتم
+let isMuted = localStorage.getItem("muted");
+if(isMuted === "true"){
+    music.muted = true;
+}
+
+//   (تشغيل مرة وحدة فقط)
+if(localStorage.getItem("musicStarted") === "true"){
     music.play().catch(()=>{});
+}else{
+    document.addEventListener("click", function(){
+        music.play().then(()=>{
+            localStorage.setItem("musicStarted","true");
+        }).catch(()=>{});
+    }, { once:true });
 }
 
-}
+// حفظ الوقت
+setInterval(()=>{
+    localStorage.setItem("musicTime", music.currentTime);
+},1000);
 
-}, { once:true });
 </script>
-
 <div class="avatar-popup" id="avatarPopup" onclick="closeAvatar()">
 <img id="bigAvatar">
 </div>
