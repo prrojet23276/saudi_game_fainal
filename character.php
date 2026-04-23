@@ -201,7 +201,9 @@ animation:dustAnim 0.6s;
 </style>
 </head>
 <body>
-<iframe src="music.html" id="musicFrame" style="display:none;"></iframe>
+<audio id="mos2" loop>
+  <source src="mos2.mp3" type="audio/mpeg">
+</audio>
 <div class="welcome">
 ياهلا فيك <?php echo $_SESSION['username']; ?> 👋
 </div>
@@ -269,6 +271,37 @@ if(music){
 }
 
 }, { once:true });
+</script>
+<script>
+let music = document.getElementById("mos2");
+
+// رجع الوقت
+let savedTime = localStorage.getItem("musicTime");
+if(savedTime){
+    music.currentTime = savedTime;
+}
+
+// رجع الكتم
+let isMuted = localStorage.getItem("muted");
+if(isMuted === "true"){
+    music.muted = true;
+}
+
+// 🔥 أهم شي (تشغيل مرة وحدة فقط)
+if(localStorage.getItem("musicStarted") === "true"){
+    music.play().catch(()=>{});
+}else{
+    document.addEventListener("click", function(){
+        music.play().then(()=>{
+            localStorage.setItem("musicStarted","true");
+        }).catch(()=>{});
+    }, { once:true });
+}
+
+// حفظ الوقت
+setInterval(()=>{
+    localStorage.setItem("musicTime", music.currentTime);
+},1000);
 </script>
 <audio id="selectSound" src="cus.mp3"></audio>
 </body>
