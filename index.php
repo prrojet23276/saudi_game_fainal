@@ -304,7 +304,9 @@ display:none;
 </head>
 
 <body>
- <iframe src="music.html" id="musicFrame" style="display:none;"></iframe>
+<audio id="mos2" loop>
+  <source src="mos2.mp3" type="audio/mpeg">
+</audio>
 <div id="loadingScreen">
 
     <img src="loggo.png" class="game-logo">
@@ -434,6 +436,37 @@ if(music){
 }
 
 }, { once:true });
+</script>
+<script>
+let music = document.getElementById("mos2");
+
+// رجع الوقت
+let savedTime = localStorage.getItem("musicTime");
+if(savedTime){
+    music.currentTime = savedTime;
+}
+
+// رجع الكتم
+let isMuted = localStorage.getItem("muted");
+if(isMuted === "true"){
+    music.muted = true;
+}
+
+//  أ (تشغيل مرة وحدة فقط)
+if(localStorage.getItem("musicStarted") === "true"){
+    music.play().catch(()=>{});
+}else{
+    document.addEventListener("click", function(){
+        music.play().then(()=>{
+            localStorage.setItem("musicStarted","true");
+        }).catch(()=>{});
+    }, { once:true });
+}
+
+// حفظ الوقت
+setInterval(()=>{
+    localStorage.setItem("musicTime", music.currentTime);
+},1000);
 </script>
 <div class="characters">
     <img src="girl.png" class="char">
